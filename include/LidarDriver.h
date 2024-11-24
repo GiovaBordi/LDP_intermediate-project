@@ -39,25 +39,43 @@
 namespace lidar_driver {
 	class LidarDriver {
 		public:
-			LidarDriver();
+			// costruttori e distruttori
+			LidarDriver(double);
 			LidarDriver(const LidarDriver &);
+			LidarDriver(LidarDriver &&);
+			~LidarDriver();
+
+			// member function
 			void new_scan(std::vector<double>);
 			std::vector<double> get_scan();
 			void clear_buffer();
-			double get_distance(double);
+			double get_distance(double) const;
 
+			// classi per lancio di errori
 			class NoGheSonVettoriError {}; // Eccezione "NoGheSonVettori" ("NoCiSonoVettori")
 			class NullVettorError {};
+			class ResolusionForaDaiRangeError{};
+			class AngoloForaDaiRangeError{};
+
 		private:
+			// costanti private
 			static constexpr int BUFFER_DIM{10};
-			static constexpr int DIM_LETTURE{181};
-			std::vector<double> *secia; // BUFFER ("secia" = secchio)
-			int elPiNovo;   // Indice all'ultimo vettore inserito ("elPiNovo" = ilPiùNuovo)
-			int elPiVecio;  // Indice al vettore da più tempo presente nel buffer ("elPiVecio" = ilPiùVecchio)
-			int dimension;  // Dimensione attuale del buffer
+			static constexpr int MIN_ANGLE{0};
+			static constexpr int MAX_ANGLE{180};
+			static constexpr double MIN_RESOLUTION{0.1};
+			static constexpr double MAX_RESOLUTION{1};
+
+			// variabili private
+			std::vector<std::vector<double>*> *secia;	// BUFFER ("secia" = secchio)
+			int elPiNovo;		// Indice all'ultimo vettore inserito ("elPiNovo" = ilPiùNuovo)
+			int elPiVecio;		// Indice al vettore da più tempo presente nel buffer ("elPiVecio" = ilPiùVecchio)
+			int dimension;		// Dimensione utilizzata del buffer
+			int dimScansioni;	// Dimensione dei vettori delle scansioni
+			double resolusion;	// Risoluzione angolare dello strumento
 	};
 
-	std::ostream &operator<<(std::ostream &, LidarDriver &);
-};
+	// overloading operatore output
+	std::ostream &operator<<(std::ostream &, const LidarDriver &);
+}
 
 #endif // LIDARDRIVER_H
