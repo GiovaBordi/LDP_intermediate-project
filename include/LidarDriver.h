@@ -31,6 +31,7 @@
 	
 	Osservazioni (5.0 - G. Simonetto)
 		1. correzione sull'implementazione in memoria del buffer
+		2. aggiunta funzione get_last per implementazione dell'overloading operator<<
 */
 
 #ifndef LIDARDRIVER_H
@@ -50,6 +51,7 @@ namespace lidar_driver {
 			// member function
 			void new_scan(std::vector<double>);
 			std::vector<double> get_scan();
+			std::vector<double> get_last() const;
 			void clear_buffer();
 			double get_distance(double) const;
 
