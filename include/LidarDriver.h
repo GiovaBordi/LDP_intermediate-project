@@ -28,6 +28,9 @@
 			- aggiunta costante MAX_RESOLUTION
 			- sostituzione costante DIM_LETTURE con dimScansioni
 			- correzione dichiarazione di secia -> è puntatore a vettore di puntatori a vettori di double
+	
+	Osservazioni (5.0 - G. Simonetto)
+		1. correzione sull'implementazione in memoria del buffer
 */
 
 #ifndef LIDARDRIVER_H
@@ -43,7 +46,6 @@ namespace lidar_driver {
 			LidarDriver(double);
 			LidarDriver(const LidarDriver &);
 			LidarDriver(LidarDriver &&);
-			~LidarDriver();
 
 			// member function
 			void new_scan(std::vector<double>);
@@ -52,8 +54,8 @@ namespace lidar_driver {
 			double get_distance(double) const;
 
 			// classi per lancio di errori
-			class NoGheSonVettoriError {}; // Eccezione "NoGheSonVettori" ("NoCiSonoVettori")
-			class NullVettorError {};
+			class NoGheSonVettoriError{}; // Eccezione "NoGheSonVettori" ("NoCiSonoVettori")
+			class NullVettorError{};
 			class ResolusionForaDaiRangeError{};
 			class AngoloForaDaiRangeError{};
 
@@ -66,7 +68,7 @@ namespace lidar_driver {
 			static constexpr double MAX_RESOLUTION{1};
 
 			// variabili private
-			std::vector<std::vector<double>*> *secia;	// BUFFER ("secia" = secchio)
+			std::vector<std::vector<double>> secia;	// BUFFER ("secia" = secchio)
 			int elPiNovo;		// Indice all'ultimo vettore inserito ("elPiNovo" = ilPiùNuovo)
 			int elPiVecio;		// Indice al vettore da più tempo presente nel buffer ("elPiVecio" = ilPiùVecchio)
 			int dimension;		// Dimensione utilizzata del buffer
