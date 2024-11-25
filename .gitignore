@@ -31,3 +31,7 @@
 *.out
 *.app
 main
+
+# cartelle
+build
+test
