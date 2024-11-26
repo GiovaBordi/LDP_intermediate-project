@@ -32,12 +32,18 @@
 	Osservazioni (5.0 - G. Simonetto)
 		1. correzione sull'implementazione in memoria del buffer
 		2. aggiunta funzione get_last per implementazione dell'overloading operator<<
+
+	Osservazioni (6.0 - G. Simonetto)
+		1. non serve il costruttore e l'operatore di copia perché è sufficiente la shallow copy membro a membro
+		   siccome non abbiamo puntatori da gestire, il vettore secia applica la copia membro a membro sugli
+		   elementi che contiene e, non contenendo puntatori, è tutto ok
+		2. serve, invece, il costruttore di move e l'operatore di move per risparmiare dati e tempo
 */
 
 #ifndef LIDARDRIVER_H
 #define LIDARDRIVER_H
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 namespace lidar_driver {
@@ -45,7 +51,6 @@ namespace lidar_driver {
 		public:
 			// costruttori e distruttori
 			LidarDriver(double);
-			LidarDriver(const LidarDriver &);
 			LidarDriver(LidarDriver &&);
 
 			// member function
@@ -54,6 +59,9 @@ namespace lidar_driver {
 			std::vector<double> get_last() const;
 			void clear_buffer();
 			double get_distance(double) const;
+
+			// overloading operatori
+			void operator=(LidarDriver &&);
 
 			// classi per lancio di errori
 			class NoGheSonVettoriError{}; // Eccezione "NoGheSonVettori" ("NoCiSonoVettori")

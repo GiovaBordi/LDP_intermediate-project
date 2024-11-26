@@ -1,6 +1,8 @@
 #include "../include/LidarDriver.h"
-#include <cmath>  // per std::round nella funzione get_distance
-#include <string> // per overloading operator<<
+#include <vector>  // per operazioni su vector
+#include <cmath>   // per std::round nella funzione get_distance
+#include <ostream> // per overloading operator<<
+#include <string>  // per overloading operator<<
 
 namespace lidar_driver {
 	/* Costruttore con risoluzione:
@@ -27,8 +29,11 @@ namespace lidar_driver {
 	/* Costruttore di copia:
 		1. riceve come parametro un oggetto da copiare
 		2. esegue la deep copy dell'oggetto
+
+		siccome non ci sono riferimenti da copiare -> shallow copy = deep copy,
+		per cui non serve necessariamente un costruttore di copia
 	*/
-	LidarDriver::LidarDriver(const LidarDriver &ld) {
+	/*LidarDriver::LidarDriver(const LidarDriver &ld) {
 		// inizializzazione variabili con i valori dell'oggetto da copiare
 		elPiNovo = ld.elPiNovo;
 		elPiVecio = ld.elPiVecio;
@@ -36,12 +41,22 @@ namespace lidar_driver {
 		resolusion = ld.resolusion;
 
 		// copio i valori del buffer dell'oggetto da copiare
+		// si effettua la copia membro a mebro definita nella classe vector
+		// non serve effettuare il resize di secia
 		secia = ld.secia;
-	}
+	}*/
 
 	/* Costruttore di move:
 		1. riceve come parametro un oggetto da "smembrare"
 		2. copia le variabili da copiare e sposta i riferimenti da spostare
+
+		Osservazione 1: siccome il buffer può occupare molto spazio in memoria, è bene implementare
+		un construttore di move per risparmiare spazio e tempo
+
+		Osservazione 2: si suppone che l'rvalue non verrà più utilizzato perché la sua secia (vettore
+		che conterrà i vettori con i dati delle scansioni) ha dimensione nulla e non BUFFER_DIM come 
+		dovrebbe essere, ovvero il suo stato non è valido. Però il problema non si pone, siccome un
+		rvalue non si utilizza più di una volta
 	*/
 	LidarDriver::LidarDriver(LidarDriver &&ld) {
 		// inizializzazione variabili con i valori dell'oggetto da smembrare
@@ -142,9 +157,12 @@ namespace lidar_driver {
 		elPiNovo = elPiVecio = dimension = 0;
 
 		// Svuota tutti i vettori -> effettuo una swap con vettore vuoto
-		for (int i = 0; i < BUFFER_DIM; i++) {
+		for (int i = 0; i < BUFFER_DIM; i++)
 			std::vector<double>().swap(secia[i]);
-		}
+
+		// VERSIONE 2: per evitare il ciclo for finale, faccio direttamente la reallocazione dell'intera secia
+		// e correggo eventuali strani casi in cui il vettore cambia dimensione (es. costruttore move)
+		// std::vector<std::vector<double>>(BUFFER_DIM).swap(secia);
 	}
 
 	/* Funzione get_distance(double):
@@ -191,6 +209,29 @@ namespace lidar_driver {
 		return secia[elPiNovo][index];
 	}
 
+	/* Overloading assegnamento con move:
+		1. riceve come parametro un oggetto da "smembrare"
+		2. copia le variabili da copiare e sposta i riferimenti da spostare
+
+		Osservazione 1: siccome il buffer può occupare molto spazio in memoria, è bene implementare
+		un construttore di move per risparmiare spazio e tempo
+
+		Osservazione 2: si suppone che l'rvalue non verrà più utilizzato perché la sua secia (vettore
+		che conterrà i vettori con i dati delle scansioni) ha dimensione nulla e non BUFFER_DIM come 
+		dovrebbe essere, ovvero il suo stato non è valido. Però il problema non si pone, siccome un
+		rvalue non si utilizza più di una volta
+	*/
+	void LidarDriver::operator=(LidarDriver &&ld) {
+		// inizializzazione variabili con i valori dell'oggetto da smembrare
+		elPiNovo = ld.elPiNovo;
+		elPiVecio = ld.elPiVecio;
+		dimension = ld.dimension;
+		resolusion = ld.resolusion;
+
+		// la funzione swap scambia i riferimenti dei dati tra i due vettori
+		secia.swap(ld.secia);
+	}
+
 	/* Ridefinizione dell'operatore <<
         Autore: G. Bordignon
         VARIANTE 1:
@@ -204,7 +245,7 @@ namespace lidar_driver {
     */
     std::ostream &operator<<(std::ostream& os, const LidarDriver& ld) {
         try {
-			std::vector<double> temp = ld.get_last();
+			std::vector<double> temp = ld.get_last(); // <- qui si potrebbe lanciare l'eccezione
 			std::string s = "{ ";
 			for (int i = 0; i < temp.size(); i++) {
 				s += std::to_string(temp[i]);
