@@ -5,15 +5,14 @@
 	Autore:		Giovanni Bordignon - Giacomo Simonetto
 
 	Osservazioni (1.0 - G. Bordignon):
-		1. BUFFER_DIM dichiarata costante e statica. OK?
-		2. Indice "coa", da trovare nome per eventuale secondo indice.
-		3. Per ora dichiarato solo il costruttore di default e copia, serve altro?.
-		4. Valutare se tornare il vettore sovrascritto dalla funzione new_scan();
-		5. (Funzioni const)
+		1. Dichiarazioni costanti statiche (BUFFER_DIM).
+		2. Dichiarazione primo indice (coa), in valutazione nome del secondo indice.
+		3. Dichiarazione dei costruttori di default e copia.
+		4. Dichiarazioni di alcune funzioni membro.
 
 	Osservazioni (3.0 - G. Bordignon)
-		1. Verificare i punti 1 (IMPORTANTE, valida anche per MAX_LETTURE) - 3 - 4 delle Osservazioni della versione 1.0;
-		2. Valutare eventuale cambio nome degli indici agli elementi.
+		1. Modifiche varie, alla luce anche delle osservazioni della v. 1.0.
+		2. Valutato cambio nomi agli indici.
 
 	Osservazioni (4.0 -  G. Simonetto)
 		1. aggiunta del namespace
