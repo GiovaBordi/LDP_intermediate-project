@@ -113,10 +113,6 @@ namespace lidar_driver {
 
 	/* Funzione get_last():
         Autore: G. Bordignon
-        VARIANTE 1:
-        La funzione restituisce l'ultimo vettore inserito, in caso il buffer sia vuoto restiuisce un vettore vuoto.
-
-        VARIANTE 2 (togliere commenti):
         La funzione restituisce l'ultimo vettore inserito, in caso il buffer sia vuoto viene lanciata l'eccezione "NoGheSonVettoriError".
 
 		La funzione non è richiesta dalle specifiche, ma viene usata dalla helper function dell'overloading dell'operatore <<
@@ -193,11 +189,6 @@ namespace lidar_driver {
 
 	/* Ridefinizione dell'operatore <<
         Autore: G. Bordignon
-        VARIANTE 1:
-        La funzione riceve da get_last() l'ultimo vettore inserito nel buffer, procede quindi a salvare gli elementi, opportunamente formattati, in una stringa
-        che verrà in seguito inviata allo stream di output.
-        
-        VARIANTE 2 (togliere commenti):
         Con un try - catch viene gestito il caso in cui il buffer sia vuoto: la funzione get_last lancia infatti l'eccezione "NoGheSonVettori", che, recepita dalla presente
         funzione, permette di inviare immediatamente allo stream di output una generica stampa di un array vuoto. Nel caso l'eccezione non si presenti, sintomo che il buffer
         non è vuoto, l'ultimo vettore inserito viene restituito dalla funzione get_last() e stampato con un'opportuna formattazione.
